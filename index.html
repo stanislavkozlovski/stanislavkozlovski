@@ -7,7 +7,7 @@
         <link rel="icon" href="sun.png" />
         <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
         />
         <style>
             :root {
@@ -117,6 +117,53 @@
                 color: currentColor;
             }
 
+            .footnote {
+                position: relative;
+                display: inline;
+            }
+
+            .footnote-marker {
+                display: inline-block;
+                margin-left: 4px;
+                padding: 0 2px;
+                border-radius: 0;
+                background: none;
+                color: #ffd84a;
+                font-family: "Playfair Display", "Times New Roman", serif;
+                font-size: 12px;
+                line-height: 1.4;
+                font-weight: 600;
+                vertical-align: super;
+                cursor: help;
+            }
+
+            .footnote-tooltip {
+                position: absolute;
+                left: 0;
+                top: 1.5em;
+                z-index: 10;
+                min-width: 320px;
+                max-width: 520px;
+                padding: 12px 14px;
+                border-radius: 8px;
+                background: rgba(235, 235, 235, 0.95);
+                color: #2f2f2f;
+                font-size: 14px;
+                line-height: 1.5;
+                opacity: 0;
+                transform: translateY(4px);
+                transition:
+                    opacity 0.2s ease,
+                    transform 0.2s ease;
+                pointer-events: none;
+            }
+
+            .footnote:hover .footnote-tooltip,
+            .footnote:focus-within .footnote-tooltip {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
             footer {
                 margin-top: 64px;
                 color: #9b9a97;
@@ -186,7 +233,9 @@
                 >
                     <div class="page-header">
                         <h1>stanislav 🌞</h1>
-                        <p>unapologetically myself.</p>
+                        <p>
+                            myself. i can't explain it.
+                        </p>
                     </div>
 
                     <div class="regular-section">
@@ -257,7 +306,9 @@
                         <h2>working out</h2>
                         <p class="bullet">
                             kickboxing for fighting, stretching, HIIT and pure
-                            fun
+                            fun<span
+                                data-footnote="you can only understand it after you've tried it"
+                            ></span>
                         </p>
                         <p class="bullet">
                             weight lifting for strong muscles and bones
@@ -269,12 +320,20 @@
                         <p class="bullet">
                             predominantly animal-based food, all
                             organic/grass-fed (where possible)
+                            <span
+                                data-footnote="yes, tons of meat. trust me it's extremely good for you"
+                            ></span>
                         </p>
                         <p class="bullet">zero processed sugar</p>
                         <p class="bullet">
-                            very low alcohol intake, less-processed - wine
+                            very low alcohol intake (and if so, less-processed
+                            like wine)
                         </p>
-                        <p class="bullet">quality espresso</p>
+                        <p class="bullet">
+                            quality espresso<span
+                                data-footnote="if your coffee machine setup doesn't cost as much as an entry-level car, you're not there yet."
+                            ></span>
+                        </p>
                     </div>
 
                     <div class="regular-section">
@@ -378,6 +437,35 @@
         </div>
 
         <script>
+            const footnotes = Array.from(
+                document.querySelectorAll("[data-footnote]"),
+            );
+
+            footnotes.forEach((note, index) => {
+                const text = note.getAttribute("data-footnote");
+                if (!text) {
+                    return;
+                }
+
+                const number = index + 1;
+                const marker = document.createElement("span");
+                const tooltip = document.createElement("span");
+                const tooltipId = `footnote-${number}`;
+
+                marker.className = "footnote-marker";
+                marker.textContent = String(number);
+                marker.setAttribute("tabindex", "0");
+                marker.setAttribute("role", "button");
+                marker.setAttribute("aria-describedby", tooltipId);
+
+                tooltip.className = "footnote-tooltip";
+                tooltip.id = tooltipId;
+                tooltip.textContent = text;
+
+                note.classList.add("footnote");
+                note.append(marker, tooltip);
+            });
+
             const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
             const panels = Array.from(
                 document.querySelectorAll('[role="tabpanel"]'),
